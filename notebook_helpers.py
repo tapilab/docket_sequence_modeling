@@ -429,21 +429,6 @@ def split_train_validation(filtered_data, test_size=0.2, random_state=None):
     
     return train_sequences_and_labels, val_sequences_and_labels
 
-def k_fold_cross_validation_split(filtered_data, k=5):
-    from sklearn.model_selection import KFold
-    
-    kf = KFold(n_splits=k, shuffle=True)
-    folds = []
-    
-    data_array = np.array(filtered_data)
-    
-    for train_index, val_index in kf.split(data_array):
-        train_data = data_array[train_index].tolist()
-        val_data = data_array[val_index].tolist()
-        folds.append((train_data, val_data))
-    
-    return folds
-
 
 def prepare_sequences_and_labels(data_with_labels):
     sequences_only = [seq for seq, _ in data_with_labels]

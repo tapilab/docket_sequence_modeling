@@ -255,7 +255,3 @@ def run_random_baseline_comparison(train_data, val_data, label_processor, random
         import traceback
         traceback.print_exc()
         return None, None
-
-
-def convert_random_baseline_results_to_table_format(results):
-    return results
