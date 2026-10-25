@@ -114,7 +114,7 @@ class FrequencyBasedRandomClassifier:
         return predictions
     
     def evaluate(self, val_sequences):
-        print(f"\n📊 Evaluating random classifier on {len(val_sequences)} sequences...")
+        print(f"\nEvaluating random classifier on {len(val_sequences)} sequences...")
         
         # Get predictions
         predictions = self.predict_sequences(val_sequences)
@@ -216,13 +216,13 @@ class FrequencyBasedRandomClassifier:
         }
         
         # Print results
-        print(f"\n🎯 RANDOM BASELINE RESULTS:")
+        print(f"\nRANDOM BASELINE RESULTS:")
         print(f"   Total samples: {total_proceedings:,}")
         print(f"   Total positive labels: {int(all_true.sum()):,}")
-        print(f"\n✅ Micro-averaged Precision: {micro_precision:.4f}")
-        print(f"✅ Micro-averaged Recall:    {micro_recall:.4f}")
-        print(f"✅ Micro-averaged F1-Score:  {micro_f1:.4f}")
-        print(f"\n📊 Other averages:")
+        print(f"\nMicro-averaged Precision: {micro_precision:.4f}")
+        print(f"Micro-averaged Recall:    {micro_recall:.4f}")
+        print(f"Micro-averaged F1-Score:  {micro_f1:.4f}")
+        print(f"\nOther averages:")
         print(f"   Macro F1:    {macro_f1:.4f}")
         print(f"   Weighted F1: {weighted_f1:.4f}")
         
@@ -235,7 +235,7 @@ def run_random_baseline_comparison(train_data, val_data, label_processor, random
     print("="*80)
     
     try:
-        print(f"🎲 Simple random baseline: Global frequencies + Actual k from ground truth")
+        print(f"Simple random baseline: Global frequencies + Actual k from ground truth")
         print(f"   Training sequences: {len(train_data)}")
         print(f"   Validation sequences: {len(val_data)}")
         print(f"   Total labels: {len(label_processor.label_names)}")
@@ -247,11 +247,11 @@ def run_random_baseline_comparison(train_data, val_data, label_processor, random
         # Evaluate
         results = classifier.evaluate(val_data)
         
-        print(f"\n✅ Random baseline comparison completed")
+        print(f"\nRandom baseline comparison completed")
         return classifier, results
         
     except Exception as e:
-        print(f"\n⚠️ Random baseline failed: {e}")
+        print(f"\nRandom baseline failed: {e}")
         import traceback
         traceback.print_exc()
         return None, None

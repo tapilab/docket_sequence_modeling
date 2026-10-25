@@ -14,7 +14,7 @@ def comprehensive_training_diagnostic(validation_samples, label_processor, train
     model_configuration = get_model_config()
     label_names = label_processor.label_names if label_processor is not None else model_configuration.LABEL_NAMES
     
-    print("🔍 COMPREHENSIVE TRAINING DIAGNOSTIC")
+    print("COMPREHENSIVE TRAINING DIAGNOSTIC")
     print("=" * 80)
     
     # 1. Check evaluation skipping pattern
@@ -162,11 +162,11 @@ def comprehensive_training_diagnostic(validation_samples, label_processor, train
                 for idx in top_indices:
                     lbl = label_processor.label_names[idx]
                     prob = prob_vec[idx]
-                    indicator = "✅" if true_vec[idx] == 1 else "❌"
+                    indicator = "[x]" if true_vec[idx] == 1 else "[ ]"
                     print(f"    {lbl}: {prob:.3f} {indicator}")
 
                 if k == 0:
-                    print(f"    ⚠️  This step would be SKIPPED in evaluation!")
+                    print(f"    This step would be SKIPPED in evaluation!")
     
     # 5. Critical issue identification and recommendations
     print(f"\n5. CRITICAL ISSUES & RECOMMENDATIONS")
@@ -175,27 +175,27 @@ def comprehensive_training_diagnostic(validation_samples, label_processor, train
     issues = []
     
     if skipped_steps / total_steps > 0.5:
-        issues.append(f"🚨 SEVERE: {skipped_steps/total_steps*100:.1f}% of steps skipped in evaluation")
+        issues.append(f"SEVERE: {skipped_steps/total_steps*100:.1f}% of steps skipped in evaluation")
     
     if total_steps - skipped_steps < 50:
-        issues.append(f"🚨 SEVERE: Only {total_steps - skipped_steps} steps actually evaluated")
+        issues.append(f"SEVERE: Only {total_steps - skipped_steps} steps actually evaluated")
     
     if len(training_label_counts) < 5:
-        issues.append(f"🚨 SEVERE: Only {len(training_label_counts)} unique label types in training")
+        issues.append(f"SEVERE: Only {len(training_label_counts)} unique label types in training")
     
     if not issues:
-        issues.append("✅ No obvious critical issues detected")
+        issues.append("No obvious critical issues detected")
     
     for issue in issues:
         print(f"  {issue}")
     
     # Show the smoking gun
-    print(f"\n🎯 THE SMOKING GUN:")
+    print(f"\nTHE SMOKING GUN:")
     if skipped_steps/total_steps > 0.5:
         print(f"   {skipped_steps/total_steps*100:.1f}% of evaluation steps are SKIPPED!")
         print(f"   Your 'bad' metrics are based on only {(total_steps-skipped_steps)/total_steps*100:.1f}% of the data!")
         print(f"   This explains the terrible performance metrics.")
-        print(f"\n   🔧 FIX: Remove the 'if k == 0: continue' line from evaluation function")
+        print(f"\n   FIX: Remove the 'if k == 0: continue' line from evaluation function")
     else:
         print(f"   Evaluation skipping is not the main issue ({skipped_steps/total_steps*100:.1f}% skipped)")
         print(f"   Problem is likely data quality or model architecture.")

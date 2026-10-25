@@ -198,7 +198,7 @@ def train_case_transformer_with_mlb(
     # Update model's classifier if needed to match label processor size
     if hasattr(model, 'classifier') and model.classifier is not None:
         if model.classifier.out_features != len(label_processor.label_names):
-            print(f"🔧 Updating model classifier: {model.classifier.out_features} → {len(label_processor.label_names)} labels")
+            print(f"Updating model classifier: {model.classifier.out_features} -> {len(label_processor.label_names)} labels")
             model.classifier = nn.Linear(
                 model.classifier.in_features, 
                 len(label_processor.label_names)
@@ -224,7 +224,7 @@ def train_case_transformer_with_mlb(
             div_factor=25.0,  # Initial LR = max_lr / 25
             final_div_factor=1e4  # Final LR = max_lr / 10000
         )
-        print(f"\n📈 LR Scheduler: OneCycleLR")
+        print(f"\nLR Scheduler: OneCycleLR")
         print(f"   Steps per epoch: {steps_per_epoch}")
         print(f"   Total steps: {total_steps}")
         print(f"   Max LR: {lr * 5:.2e}")
@@ -243,7 +243,7 @@ def train_case_transformer_with_mlb(
             print(f"{label} - Allocated: {allocated:.2f} MB, Reserved: {reserved:.2f} MB")
 
     print_memory("Before training")
-    print(f"🚀 Starting training with MultiLabelBinarizer")
+    print(f"Starting training with MultiLabelBinarizer")
     print(f"   Label processor: {len(label_processor.label_names)} labels")
     print(f"   Training sequences: {len(sequences_and_labels)}")
     print(f"   Validation sequences: {len(val_data) if val_data else 'None'}")
@@ -405,17 +405,17 @@ def train_case_transformer_with_mlb(
                 macro_f1 = val_metrics['SUMMARY']['macro_avg']['f1']
                 weighted_f1 = val_metrics['SUMMARY']['weighted_avg']['f1']
                 
-                print(f"Epoch {epoch}/{epochs} – Train Loss: {avg_train_loss:.4f}, "
+                print(f"Epoch {epoch}/{epochs} - Train Loss: {avg_train_loss:.4f}, "
                       f"Val Loss: {val_loss:.4f}")
-                print(f"                 – Micro F1: {micro_f1:.3f}, "
+                print(f"                 - Micro F1: {micro_f1:.3f}, "
                       f"Micro P: {micro_precision:.3f}, Micro R: {micro_recall:.3f}")
-                print(f"                 – Macro F1: {macro_f1:.3f}, "
+                print(f"                 - Macro F1: {macro_f1:.3f}, "
                       f"Weighted F1: {weighted_f1:.3f}")
             else:
-                print(f"Epoch {epoch}/{epochs} – Train Loss: {avg_train_loss:.4f}, "
+                print(f"Epoch {epoch}/{epochs} - Train Loss: {avg_train_loss:.4f}, "
                       f"Val Loss: {val_loss:.4f}")
         else:
-            print(f"Epoch {epoch}/{epochs} – Train Loss: {avg_train_loss:.4f}")
+            print(f"Epoch {epoch}/{epochs} - Train Loss: {avg_train_loss:.4f}")
 
         # Log metrics
         logger.log_epoch(epoch, avg_train_loss, val_loss, val_metrics, current_lr)

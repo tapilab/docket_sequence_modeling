@@ -239,11 +239,11 @@ def create_model_from_data(data: Dict, cache_dir: Union[str, Path, None] = None,
         print(f"Date range in data: {min_year} to {max_year}")
         print(f"Using MIN_YEAR={model_configuration.min_year}, NUM_YEARS={model_configuration.num_years}")
         print(f"Updated temporal dimensions: {model_configuration.temporal_dim} features "
-              f"({model_configuration.num_months} months × {model_configuration.num_years} years)")
+              f"({model_configuration.num_months} months x {model_configuration.num_years} years)")
     else:
         print(f"Using default date range settings: {model_configuration.min_year} to {model_configuration.max_year}")
         print(f"Temporal dimensions: {model_configuration.temporal_dim} features "
-              f"({model_configuration.num_months} months × {model_configuration.num_years} years)")
+              f"({model_configuration.num_months} months x {model_configuration.num_years} years)")
     
     # Create vocabularies
     charge_vocab, mag_vocab = create_vocabularies_from_data(data)

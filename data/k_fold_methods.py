@@ -283,13 +283,13 @@ class KFoldCVRunner:
 
         print("Aggregate Metrics Across All Folds:")
         if "micro_f1" in agg:
-            print(f"Micro F1:        {agg['micro_f1']['mean']:.4f} ± {agg['micro_f1']['std']:.4f}")
+            print(f"Micro F1:        {agg['micro_f1']['mean']:.4f} +/- {agg['micro_f1']['std']:.4f}")
         if "micro_precision" in agg:
-            print(f"Micro Precision: {agg['micro_precision']['mean']:.4f} ± {agg['micro_precision']['std']:.4f}")
+            print(f"Micro Precision: {agg['micro_precision']['mean']:.4f} +/- {agg['micro_precision']['std']:.4f}")
         if "micro_recall" in agg:
-            print(f"Micro Recall:    {agg['micro_recall']['mean']:.4f} ± {agg['micro_recall']['std']:.4f}")
+            print(f"Micro Recall:    {agg['micro_recall']['mean']:.4f} +/- {agg['micro_recall']['std']:.4f}")
         if "macro_f1" in agg:
-            print(f"Macro F1:        {agg['macro_f1']['mean']:.4f} ± {agg['macro_f1']['std']:.4f}")
+            print(f"Macro F1:        {agg['macro_f1']['mean']:.4f} +/- {agg['macro_f1']['std']:.4f}")
 
         print(f"Best Fold ({self.best_fold_idx + 1}) Metrics:")
         best_fold_metrics = self.fold_results[self.best_fold_idx]["metrics"]

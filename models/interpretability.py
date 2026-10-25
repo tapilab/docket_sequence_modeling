@@ -146,7 +146,7 @@ class CaseTransformerInterpretability:
         
         self._attributions_cache = {}
         if self.verbose:
-            print(f"✅ CombinedCaptumWrapper initialized")
+            print(f"CombinedCaptumWrapper initialized")
             print(f"   Device: {device}")
             print(f"   Model type: {type(model).__name__}")
             print(f"   Labels: {len(label_processor.label_names)}")
@@ -213,7 +213,7 @@ class CaseTransformerInterpretability:
             raise ValueError("The input sequence is empty after trimming to max_len.")
         
         if self.verbose:
-            print(f"🔍 Attributing sequence of length {len(seq_trimmed)} for class index {target_class_idx} at proceeding index {target_proceeding_idx}")
+            print(f"Attributing sequence of length {len(seq_trimmed)} for class index {target_class_idx} at proceeding index {target_proceeding_idx}")
         
         input_features = self._get_baseline_features_tensor(seq_trimmed)
         references_features = torch.zeros_like(input_features, device=self.device)
@@ -282,7 +282,7 @@ class CaseTransformerInterpretability:
             
         except Exception as e:
             if self.verbose:
-                print(f"❌ Attribution failed: {e}")
+                print(f"Attribution failed: {e}")
             raise e
     def visualize_proceeding_importance(
         self,
@@ -334,7 +334,7 @@ class CaseTransformerInterpretability:
         if save_path:
             plt.savefig(save_path, bbox_inches='tight')
             if self.verbose:
-                print(f"✅ Saved to {save_path}")
+                print(f"Saved to {save_path}")
         
         if show:
             plt.show()
@@ -427,7 +427,7 @@ class CaseTransformerInterpretability:
         if save_path:
             plt.savefig(save_path, bbox_inches='tight')
             if self.verbose:
-                print(f"✅ Saved to {save_path}")
+                print(f"Saved to {save_path}")
         
         if show:
             plt.show()
@@ -710,7 +710,7 @@ class CaseTransformerInterpretability:
                 f.write(buf.read())
             buf.close()
             if self.verbose:
-                print(f"✅ Saved {view_type} heatmap to {save_path}")
+                print(f"Saved {view_type} heatmap to {save_path}")
         
         plt.show()
         plt.close()

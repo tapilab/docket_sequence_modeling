@@ -9,14 +9,14 @@ def mount_drive(base_path: str = None) -> Path:
         gdrive_mount = Path('/data/krosen5/gdrive-all')
 
         if gdrive_mount.exists() and gdrive_mount.is_dir():
-            print(f"✓ Found Google Drive mount at {gdrive_mount}")
+            print(f"[OK] Found Google Drive mount at {gdrive_mount}")
 
             # Test if mount is actually working
             try:
                 list(gdrive_mount.iterdir())
-                print("✓ Google Drive mount is accessible")
+                print("[OK] Google Drive mount is accessible")
             except OSError:
-                print("✗ Google Drive mount exists but is not accessible")
+                print("[FAIL] Google Drive mount exists but is not accessible")
                 print("Try: systemctl --user restart rclone-gdrive.service")
                 raise
 
@@ -27,11 +27,11 @@ def mount_drive(base_path: str = None) -> Path:
                 root = gdrive_mount
 
             if root.exists():
-                print(f"✓ Data directory found: {root}")
+                print(f"[OK] Data directory found: {root}")
                 os.chdir(root)
                 return root
             else:
-                print(f"✗ Data directory not found: {root}")
+                print(f"[FAIL] Data directory not found: {root}")
                 print(f"Available directories in {gdrive_mount}:")
                 for item in gdrive_mount.iterdir():
                     if item.is_dir():
@@ -39,7 +39,7 @@ def mount_drive(base_path: str = None) -> Path:
                 raise FileNotFoundError(f"Data directory {root} not found")
 
         else:
-            print("✗ Google Drive not mounted at /data/krosen5/gdrive-all")
+            print("[FAIL] Google Drive not mounted at /data/krosen5/gdrive-all")
             print("Please run the setup script first or mount manually:")
             print("  systemctl --user start rclone-gdrive.service")
             raise FileNotFoundError("Google Drive not mounted")

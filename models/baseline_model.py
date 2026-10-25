@@ -39,7 +39,7 @@ class BaselineOutcomePredictor:
         self.completion_labels = [label for label in COMPLETION_LABELS 
                                 if label in self.label_to_idx]
         
-        print(f"🎯 Baseline model will predict {len(self.completion_labels)} completion outcomes:")
+        print(f"Baseline model will predict {len(self.completion_labels)} completion outcomes:")
         for i, label in enumerate(self.completion_labels):
             mlb_idx = self.label_to_idx[label]
             print(f"   {i}: {label} (MLB index: {mlb_idx})")
@@ -120,7 +120,7 @@ class BaselineOutcomePredictor:
             features_list.append(features)
             labels_list.append(outcome)
         
-        print(f"📊 Feature extraction results:")
+        print(f"Feature extraction results:")
         print(f"   Valid samples: {len(features_list)}")
         print(f"   Skipped (no features): {skipped_no_features}")
         print(f"   Skipped (no completion outcome): {skipped_no_outcome}")
@@ -159,7 +159,7 @@ class BaselineOutcomePredictor:
         # Show outcome distribution
         from collections import Counter
         outcome_counts = Counter(labels_list)
-        print(f"\n📈 Completion outcome distribution:")
+        print(f"\nCompletion outcome distribution:")
         for outcome, count in sorted(outcome_counts.items()):
             pct = count / len(labels_list) * 100
             print(f"   {outcome}: {count} ({pct:.1f}%)")
@@ -168,7 +168,7 @@ class BaselineOutcomePredictor:
 
     def train(self, sequences, epochs=20, batch_size=32, lr=1e-3):
         """Train the baseline model"""
-        print(f"🚀 Training baseline model on {len(sequences)} sequences...")
+        print(f"Training baseline model on {len(sequences)} sequences...")
         
         X, y = self.prepare_training_data(sequences)
         print(f"   Feature matrix shape: {X.shape}")
@@ -180,7 +180,7 @@ class BaselineOutcomePredictor:
         # Filter out any outcomes not in our completion set (shouldn't happen)
         valid_mask = [outcome in class_to_idx for outcome in y]
         if not all(valid_mask):
-            print(f"⚠️  Warning: {sum(~np.array(valid_mask))} samples have outcomes not in COMPLETION_LABELS")
+            print(f"Warning: {sum(~np.array(valid_mask))} samples have outcomes not in COMPLETION_LABELS")
             X = X[valid_mask]
             y = y[valid_mask]
         
@@ -234,7 +234,7 @@ class BaselineOutcomePredictor:
         # Filter valid outcomes
         valid_mask = [outcome in class_to_idx for outcome in y]
         if not all(valid_mask):
-            print(f"⚠️  Warning: {sum(~np.array(valid_mask))} test samples have invalid outcomes")
+            print(f"Warning: {sum(~np.array(valid_mask))} test samples have invalid outcomes")
             X_scaled = X_scaled[valid_mask]
             y = y[valid_mask]
         
@@ -264,12 +264,12 @@ class BaselineOutcomePredictor:
         weighted_f1 = np.average(f1, weights=support)
         acc = (preds == y_true).mean()
         
-        print(f"\n🎯 BASELINE MODEL RESULTS:")
+        print(f"\nBASELINE MODEL RESULTS:")
         print(f"   Overall Accuracy: {acc:.3f}")
         print(f"   Macro F1: {macro_f1:.3f}")
         print(f"   Weighted F1: {weighted_f1:.3f}")
         
-        print(f"\n📊 Per-Class Results (only showing classes with samples):")
+        print(f"\nPer-Class Results (only showing classes with samples):")
         for i, (label, prec, rec, f1_score, supp) in enumerate(zip(
             self.completion_labels, precision, recall, f1, support
         )):
@@ -321,7 +321,7 @@ def run_baseline(train_sequences, val_sequences, label_processor, epochs=20, bat
     print(f"=" * 80)
     print(f"BASELINE MODEL COMPARISON")
     print(f"=" * 80)
-    print(f"🚀 Starting baseline model training...")
+    print(f"Starting baseline model training...")
     print(f"   Training sequences: {len(train_sequences)}")
     print(f"   Validation sequences: {len(val_sequences)}")
     print(f"   Label processor has {len(label_processor.label_names)} labels")
@@ -334,10 +334,10 @@ def run_baseline(train_sequences, val_sequences, label_processor, epochs=20, bat
     baseline.train(train_sequences, epochs=epochs, batch_size=batch_size, lr=lr)
 
     # Evaluate on validation
-    print(f"\n📊 VALIDATION PERFORMANCE:")
+    print(f"\nVALIDATION PERFORMANCE:")
     results = baseline.evaluate(val_sequences)
 
-    print(f"\n✅ Baseline model comparison completed!")
+    print(f"\nBaseline model comparison completed!")
     return baseline, results
 
 def convert_baseline_results_to_table_format(baseline_results, total_samples=None):

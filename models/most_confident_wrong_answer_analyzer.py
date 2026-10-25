@@ -546,7 +546,7 @@ class MostConfidentWrongAnswerAnalyzer:
             print(f"Total confident mistakes: {stats['total_mistakes']}")
             print(f"Unique cases affected: {stats['unique_cases']}")
             print(f"Labels with mistakes: {stats['labels_with_mistakes']}/{len(self.label_names)}")
-            print(f"Average confidence on mistakes: {stats['avg_confidence']:.3f} Â± {stats['std_confidence']:.3f}")
+            print(f"Average confidence on mistakes: {stats['avg_confidence']:.3f} +/- {stats['std_confidence']:.3f}")
             print(f"Confidence range: [{stats['min_confidence']:.3f}, {stats['max_confidence']:.3f}]")
             print(f"\nTop 5 wrong predictions (by label):")
             for label, count in stats['most_common_wrong_predictions']:
@@ -761,7 +761,7 @@ def run_confident_misclassification_analysis(
                     late_avg = sum(late) / len(late)
                     if abs(early_avg - late_avg) > 0.1:
                         print("\n SEQUENCE POSITION EFFECT:")
-                        print(f"   Early steps (0â€“2): {early_avg:.3f}  |  Late steps (>5): {late_avg:.3f}")
+                        print(f"   Early steps (0-2): {early_avg:.3f}  |  Late steps (>5): {late_avg:.3f}")
                         if early_avg > late_avg:
                             print("   Model is more confidently wrong early in sequences.")
                         else:
