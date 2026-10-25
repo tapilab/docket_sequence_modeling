@@ -119,7 +119,7 @@ class TableGenerator:
             if torch.cuda.is_available():
                 torch.cuda.empty_cache()
         
-        print(f"✅ Added {len(cv_runner.fold_results)} K-Fold results")
+        print(f"Added {len(cv_runner.fold_results)} K-Fold results")
         
     def add_ablation_results(self,
                             config_name: str,
@@ -222,7 +222,7 @@ class TableGenerator:
             transformer_avg = self._extract_generalized_row(self.results['transformer_only_completion'])
             baseline1_avg = self._extract_generalized_row(self.results['baseline_1_only_completion'])
             diff_row = {
-                'Model': 'Δ (Transformer - Baseline 1)',
+                'Model': 'Delta (Transformer - Baseline 1)',
                 'Type': 'Only Completion Comparison'
             }
             for metric in ['Micro_F1', 'Micro_Precision', 'Micro_Recall',
@@ -249,7 +249,7 @@ class TableGenerator:
                 'baseline_1_only_completion_folds'
             )
             diff_row = {
-                'Model': 'Δ (Transformer Avg - Baseline 1 Avg)',
+                'Model': 'Delta (Transformer Avg - Baseline 1 Avg)',
                 'Type': 'Only Completion Comparison'
             }
             for metric in ['Micro_F1', 'Micro_Precision', 'Micro_Recall',
@@ -258,8 +258,8 @@ class TableGenerator:
                            'Exact_Match_Pct', 'Avg_True_Labels_Per_Case', 'Avg_Pred_Labels_Per_Case']:
                 if metric in transformer_avg and metric in baseline1_avg:
                     try:
-                        transformer_value = float(transformer_avg[metric].split(' ± ')[0])
-                        baseline1_value = float(baseline1_avg[metric].split(' ± ')[0])
+                        transformer_value = float(transformer_avg[metric].split(' +/- ')[0])
+                        baseline1_value = float(baseline1_avg[metric].split(' +/- ')[0])
                         diff_value = transformer_value - baseline1_value
                         diff_row[metric] = f"{diff_value:.4f}"
                     except:
@@ -380,12 +380,12 @@ class TableGenerator:
                 metrics['Avg_True_Labels_Per_Case'].append(np.mean([c['num_true'] for c in case_results]))
                 metrics['Avg_Pred_Labels_Per_Case'].append(np.mean([c['num_pred'] for c in case_results]))
         
-        # Compute mean ± std for each metric
+        # Compute mean +/- std for each metric
         for metric_name, values in metrics.items():
             if values:
                 mean_val = np.mean(values)
                 std_val = np.std(values)
-                row[metric_name] = f"{mean_val:.4f} ± {std_val:.4f}"
+                row[metric_name] = f"{mean_val:.4f} +/- {std_val:.4f}"
         
         return row
     
@@ -444,12 +444,12 @@ class TableGenerator:
                 metrics['Avg_True_Labels_Per_Case'].append(np.mean([c['num_true'] for c in case_results]))
                 metrics['Avg_Pred_Labels_Per_Case'].append(np.mean([c['num_pred'] for c in case_results]))
         
-        # Compute mean ± std for each metric
+        # Compute mean +/- std for each metric
         for metric_name, values in metrics.items():
             if values:
                 mean_val = np.mean(values)
                 std_val = np.std(values)
-                row[metric_name] = f"{mean_val:.4f} ± {std_val:.4f}"
+                row[metric_name] = f"{mean_val:.4f} +/- {std_val:.4f}"
         
         return row
     
@@ -522,12 +522,12 @@ class TableGenerator:
                 metrics['Avg_True_Labels_Per_Case'].append(np.mean([c['num_true'] for c in case_results]))
                 metrics['Avg_Pred_Labels_Per_Case'].append(np.mean([c['num_pred'] for c in case_results]))
         
-        # Compute mean ± std for each metric
+        # Compute mean +/- std for each metric
         for metric_name, values in metrics.items():
             if values:
                 mean_val = np.mean(values)
                 std_val = np.std(values)
-                row[metric_name] = f"{mean_val:.4f} ± {std_val:.4f}"
+                row[metric_name] = f"{mean_val:.4f} +/- {std_val:.4f}"
         
         return row
 
@@ -598,7 +598,7 @@ class TableGenerator:
                 if baseline_row is None:
                     continue
                 diff_row = {
-                    'Model': f'Δ (Transformer - Baseline 1)',
+                    'Model': f'Delta (Transformer - Baseline 1)',
                     'Type': 'Only Completion Comparison',
                     'Label': label
                 }
@@ -630,7 +630,7 @@ class TableGenerator:
                 if baseline_row is None:
                     continue
                 diff_row = {
-                    'Model': f'Δ (Transformer Avg - Baseline 1 Avg)',
+                    'Model': f'Delta (Transformer Avg - Baseline 1 Avg)',
                     'Type': 'Only Completion Comparison',
                     'Label': label
                 }
@@ -638,8 +638,8 @@ class TableGenerator:
                             'TP', 'FP', 'FN',
                             'Total_Pred', 'Total_True']:
                     try:
-                        transformer_value = float(trans_row.get(metric).split(' ± ')[0])
-                        baseline_value = float(baseline_row.get(metric).split(' ± ')[0])
+                        transformer_value = float(trans_row.get(metric).split(' +/- ')[0])
+                        baseline_value = float(baseline_row.get(metric).split(' +/- ')[0])
                         diff_value = transformer_value - baseline_value
                         if metric in ['Support', 'TP', 'FP', 'FN', 'Total_Pred', 'Total_True']:
                             diff_row[metric] = str(int(round(diff_value)))
@@ -759,16 +759,16 @@ class TableGenerator:
                 if values:
                     mean_val = np.mean(values)
                     std_val = np.std(values)
-                    row[metric_name] = f"{mean_val:.4f} ± {std_val:.2f}" if metric_name in ['Precision', 'Recall', 'F1_Score'] else f"{mean_val:.1f} ± {std_val:.1f}"
+                    row[metric_name] = f"{mean_val:.4f} +/- {std_val:.2f}" if metric_name in ['Precision', 'Recall', 'F1_Score'] else f"{mean_val:.1f} +/- {std_val:.1f}"
             
             # Calculate totals
             if label_metrics['TP'] and label_metrics['FP']:
                 total_pred_mean = np.mean([tp + fp for tp, fp in zip(label_metrics['TP'], label_metrics['FP'])])
                 total_pred_std = np.std([tp + fp for tp, fp in zip(label_metrics['TP'], label_metrics['FP'])])
-                row['Total_Pred'] = f"{total_pred_mean:.1f} ± {total_pred_std:.1f}"
+                row['Total_Pred'] = f"{total_pred_mean:.1f} +/- {total_pred_std:.1f}"
             
             if label_metrics['Support']:
-                row['Total_True'] = f"{np.mean(label_metrics['Support']):.1f} ± {np.std(label_metrics['Support']):.1f}"
+                row['Total_True'] = f"{np.mean(label_metrics['Support']):.1f} +/- {np.std(label_metrics['Support']):.1f}"
             
             rows.append(row)
         
@@ -816,16 +816,16 @@ class TableGenerator:
                 if values:
                     mean_val = np.mean(values)
                     std_val = np.std(values)
-                    row[metric_name] = f"{mean_val:.4f} ± {std_val:.2f}" if metric_name in ['Precision', 'Recall', 'F1_Score'] else f"{mean_val:.1f} ± {std_val:.1f}"
+                    row[metric_name] = f"{mean_val:.4f} +/- {std_val:.2f}" if metric_name in ['Precision', 'Recall', 'F1_Score'] else f"{mean_val:.1f} +/- {std_val:.1f}"
             
             # Calculate totals
             if label_metrics['TP'] and label_metrics['FP']:
                 total_pred_mean = np.mean([tp + fp for tp, fp in zip(label_metrics['TP'], label_metrics['FP'])])
                 total_pred_std = np.std([tp + fp for tp, fp in zip(label_metrics['TP'], label_metrics['FP'])])
-                row['Total_Pred'] = f"{total_pred_mean:.1f} ± {total_pred_std:.1f}"
+                row['Total_Pred'] = f"{total_pred_mean:.1f} +/- {total_pred_std:.1f}"
             
             if label_metrics['Support']:
-                row['Total_True'] = f"{np.mean(label_metrics['Support']):.1f} ± {np.std(label_metrics['Support']):.1f}"
+                row['Total_True'] = f"{np.mean(label_metrics['Support']):.1f} +/- {np.std(label_metrics['Support']):.1f}"
             
             rows.append(row)
         
@@ -870,16 +870,16 @@ class TableGenerator:
                 if values:
                     mean_val = np.mean(values)
                     std_val = np.std(values)
-                    row[metric_name] = f"{mean_val:.4f} ± {std_val:.2f}" if metric_name in ['Precision', 'Recall', 'F1_Score'] else f"{mean_val:.1f} ± {std_val:.1f}"
+                    row[metric_name] = f"{mean_val:.4f} +/- {std_val:.2f}" if metric_name in ['Precision', 'Recall', 'F1_Score'] else f"{mean_val:.1f} +/- {std_val:.1f}"
             
             # Calculate totals
             if label_metrics['TP'] and label_metrics['FP']:
                 total_pred_mean = np.mean([tp + fp for tp, fp in zip(label_metrics['TP'], label_metrics['FP'])])
                 total_pred_std = np.std([tp + fp for tp, fp in zip(label_metrics['TP'], label_metrics['FP'])])
-                row['Total_Pred'] = f"{total_pred_mean:.1f} ± {total_pred_std:.1f}"
+                row['Total_Pred'] = f"{total_pred_mean:.1f} +/- {total_pred_std:.1f}"
             
             if label_metrics['Support']:
-                row['Total_True'] = f"{np.mean(label_metrics['Support']):.1f} ± {np.std(label_metrics['Support']):.1f}"
+                row['Total_True'] = f"{np.mean(label_metrics['Support']):.1f} +/- {np.std(label_metrics['Support']):.1f}"
             
             rows.append(row)
         
@@ -922,7 +922,7 @@ class TableGenerator:
             if self.results['ablation_studies']:
                 self._create_feature_importance_sheet(writer)
         
-        print(f"✅ Comprehensive comparison tables saved to: {output_path}")
+        print(f"Comprehensive comparison tables saved to: {output_path}")
         return output_path
     
     def _create_summary_stats_sheet(self, writer, table1_df, table2_df):
@@ -932,8 +932,8 @@ class TableGenerator:
         if not table1_df.empty:
             for metric in ['Micro_F1', 'Macro_F1', 'Case_Avg_F1', 'Exact_Match_Pct']:
                 if metric in table1_df.columns:
-                    # Filter out rows with ± (averages)
-                    numeric_df = table1_df[~table1_df[metric].astype(str).str.contains('±', na=False)]
+                    # Filter out rows with +/- (averages)
+                    numeric_df = table1_df[~table1_df[metric].astype(str).str.contains('+/-', na=False, regex=False)]
                     if not numeric_df.empty:
                         best_idx = numeric_df[metric].astype(float).idxmax()
                         worst_idx = numeric_df[metric].astype(float).idxmin()

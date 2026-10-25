@@ -199,7 +199,7 @@ def run_ablation_study_function(
         
         if 'SUMMARY' in metrics:
             summary = metrics['SUMMARY']
-            print(f"\n📈 Results:")
+            print(f"\nResults:")
             print(f"   Micro F1: {summary['micro_avg']['f1']:.4f}")
             print(f"   Macro F1: {summary['macro_avg']['f1']:.4f}")
             print(f"   Weighted F1: {summary['weighted_avg']['f1']:.4f}")
@@ -229,5 +229,4 @@ def compare_ablation_studies_dataframe(results):
             })
     comparison_df = pd.DataFrame(comparison_data)
     return comparison_df
-
 

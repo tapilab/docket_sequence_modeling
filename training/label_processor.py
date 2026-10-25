@@ -29,7 +29,7 @@ class EnhancedLabelProcessor:
         # Fit with your predefined classes
         self.mlb.fit(all_label_sets)
         self.is_fitted = True
-        print(f"✅ Fitted MultiLabelBinarizer with {len(self.label_names)} predefined classes:")
+        print(f"Fitted MultiLabelBinarizer with {len(self.label_names)} predefined classes:")
         print(f"   Labels: {self.label_names}")
         return self
     

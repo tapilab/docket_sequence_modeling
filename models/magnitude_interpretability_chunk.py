@@ -1,4 +1,4 @@
-# magnitude_study_worker.py  ← save this as a file in your project root
+# magnitude_study_worker.py  <- save this as a file in your project root
 import torch
 import pickle
 import h5py
@@ -14,7 +14,7 @@ import pandas as pd
 
 
 def _run_magnitude_chunk(args):
-    """Runs in a separate process — each gets its own GPU and model copy."""
+    """Runs in a separate process - each gets its own GPU and model copy."""
     (chunk_seqs, chunk_labels, gpu_idx, fold_idx,
      base_cache, output_dir, chunk_idx,
      vocab_path, temporal_dim, bond_dim, age_bins, prior_case_bins) = args
@@ -30,7 +30,7 @@ def _run_magnitude_chunk(args):
 
     with open(vocab_path, 'rb') as f:
         charge_vocab, mag_vocab = pickle.load(f)
-    print(f'  [GPU {gpu_idx}] ✅ Vocabs loaded')
+    print(f'  [GPU {gpu_idx}] Vocabs loaded')
 
     pt_path = base_cache / 'saved_models' / f'k_fold_fold_{fold_idx + 1}' / \
               f'final_model_mlb_fold_{fold_idx + 1}.pt'
@@ -48,7 +48,7 @@ def _run_magnitude_chunk(args):
     model.load_state_dict(torch.load(pt_path, map_location=device))
     model.eval()
     model.to(device)
-    print(f'  [GPU {gpu_idx}] ✅ Model loaded')
+    print(f'  [GPU {gpu_idx}] Model loaded')
 
     def _ensure_h5_open(self):
         if not hasattr(self._local, 'h5') or self._local.h5 is None:

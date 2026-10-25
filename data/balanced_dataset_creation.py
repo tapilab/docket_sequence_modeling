@@ -68,7 +68,7 @@ def create_balanced_dataset(
     for label in sorted(high_freq_labels, key=lambda x: label_counts[x], reverse=True):
         print(f"  {label}: {label_counts[label]:,} cases")
 
-    # ── Step 1: include ALL cases with low-frequency labels ────────────────
+    # -- Step 1: include ALL cases with low-frequency labels ----------------
     # These labels have fewer than low_frequency_threshold cases total,
     # so we take everything available (use-all fallback).
     selected_indices = set()
@@ -77,7 +77,7 @@ def create_balanced_dataset(
 
     print(f"\nAfter including all low-frequency label cases: {len(selected_indices):,} cases")
 
-    # ── Step 2: guarantee >= low_frequency_threshold CASES per high-freq label
+    # -- Step 2: guarantee >= low_frequency_threshold CASES per high-freq label
     # For each high-frequency label that doesn't yet have enough cases in the
     # selected set, add the missing cases (shuffled). If the label has fewer
     # total cases than the threshold, all of them are added (use-all fallback).
@@ -103,7 +103,7 @@ def create_balanced_dataset(
 
     print(f"After threshold guarantee: {len(selected_indices):,} cases")
 
-    # ── Step 3: fill to target_size with random remaining cases ───────────
+    # -- Step 3: fill to target_size with random remaining cases -----------
     if len(selected_indices) < target_size:
         remaining_indices = set(range(len(sequences_and_labels))) - selected_indices
         needed = target_size - len(selected_indices)
@@ -114,7 +114,7 @@ def create_balanced_dataset(
     elif len(selected_indices) > target_size:
         print(f"Note: Guarantees exceed target ({len(selected_indices):,} > {target_size:,}). Keeping all.")
 
-    # ── Build final dataset ────────────────────────────────────────────────
+    # -- Build final dataset ------------------------------------------------
     sampled_indices = sorted(selected_indices)
     sampled_cases   = [sequences_and_labels[i] for i in sampled_indices]
     sampled_lengths = [len(seq) for seq, _ in sampled_cases]

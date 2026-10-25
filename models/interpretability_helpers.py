@@ -223,13 +223,13 @@ class CounterfactualMagnitudeStudy:
                 ["race", "gender", "age", "original_bond", "prior_case_count"]
             }
 
-            # Reverse lookup maps: value → label string
+            # Reverse lookup maps: value -> label string
             RACE_ID_TO_LABEL   = {v: k for k, v in RACE_GRID.items()}
             RACE_ID_TO_LABEL[5] = "Unknown"
             GENDER_ID_TO_LABEL  = {v: k for k, v in GENDER_GRID.items()}
             GENDER_ID_TO_LABEL[2] = "Unknown"
 
-            # ── Defendant-level features: swap once, measure across all steps ──────
+            # -- Defendant-level features: swap once, measure across all steps ------
             def record_case_swap(feat_name, feature_key, value_grid, original_val,
                                 id_to_label=None):
                 orig_label = id_to_label.get(original_val, str(original_val)) \
@@ -262,7 +262,7 @@ class CounterfactualMagnitudeStudy:
                             age_grid_swap(actual_age, self.age_bins),
                             age_original_label)
 
-            # ── Proceeding-level features: swap per step ──────────────────────────
+            # -- Proceeding-level features: swap per step --------------------------
             def record_step_swap(feat_name, feature_key, proc_idx, value_grid, original_label):
                 for swap_label, swap_val in value_grid.items():
                     if swap_label == original_label:
@@ -285,7 +285,7 @@ class CounterfactualMagnitudeStudy:
             for proc_idx in range(T):
                 pdict = teacher_seq[proc_idx]
 
-                # ── original_bond ─────────────────────────────────────────────────
+                # -- original_bond -------------------------------------------------
                 raw_bond  = pdict.get("original_bond")
                 bond_swap = bond_cyclic_swap(raw_bond)
                 if bond_swap:
@@ -294,7 +294,7 @@ class CounterfactualMagnitudeStudy:
                     record_step_swap("original_bond", "original_bond",
                                     proc_idx, bond_swap, cur_label)
 
-                # ── prior_case_count ──────────────────────────────────────────────
+                # -- prior_case_count ----------------------------------------------
                 prior_case_count_value   = pdict.get("prior_case_count", 0)
                 prior_case_count_label   = numerical_value_to_bin_label(prior_case_count_value, self.prior_case_bins)
                 pcc_swap_grid            = prior_case_count_grid_swap(prior_case_count_value, self.prior_case_bins)
@@ -302,7 +302,7 @@ class CounterfactualMagnitudeStudy:
                                 proc_idx, pcc_swap_grid, prior_case_count_label)
             return {feat: pd.DataFrame(rows) for feat, rows in results.items()}
  
-    # ──────────────────────────────────────────────────────────────────────────
+    # --------------------------------------------------------------------------
     def run(self, sequences: list, label_sequences: list, max_samples: int = 200, output_dir: Optional[Path] = None, n_workers: int = 4, parallel: bool = True, tqdm_position: int = 0) -> Dict[str, pd.DataFrame]:
         all_records: Dict[str, list] = {f: [] for f in
             ["race", "gender", "age", "original_bond", "prior_case_count"]}
@@ -321,7 +321,7 @@ class CounterfactualMagnitudeStudy:
 
         def _collect(idx, result):
             if isinstance(result, Exception):
-                print(f"  ⚠️  Skipping sample {idx}: {result}")
+                print(f"  Skipping sample {idx}: {result}")
                 return
             for feat, df in result.items():
                 if not df.empty:
@@ -356,7 +356,7 @@ class CounterfactualMagnitudeStudy:
                 continue
 
             combined  = pd.concat(record_list, ignore_index=True)
-            raw[feat] = combined   # ← preserve original_value here
+            raw[feat] = combined   # <- preserve original_value here
 
             agg = (combined
                 .groupby(["original_value", "swapped_value", "label"])
@@ -393,7 +393,7 @@ class CounterfactualMagnitudeStudy:
             for feat, df in raw.items():
                 if not df.empty:
                     df.to_pickle(Path(output_dir) / f"counterfactual_{feat}_raw.pkl")
-            print(f"✅ Tables saved to {output_dir}")
+            print(f"Tables saved to {output_dir}")
 
         return aggregated, raw
 
@@ -408,7 +408,7 @@ def plot_counterfactual_results(
 ):
     out = Path(output_dir) if output_dir else Path(".")
 
-    # ── Plot 1: Per-feature swapped-to bar chart (existing) ───────────────────
+    # -- Plot 1: Per-feature swapped-to bar chart (existing) -------------------
     for feat, df in aggregated.items():
         if df.empty:
             continue
@@ -431,11 +431,11 @@ def plot_counterfactual_results(
         pivot.plot(kind="barh", ax=ax, alpha=0.85)
 
         ax.set_title(
-            f"'{feat}' — Mean |ΔProbability| per swap\n"
+            f"'{feat}' - Mean |DeltaProbability| per swap\n"
             "(higher = prediction changes more when this value is substituted)",
             fontsize=13, fontweight="bold",
         )
-        ax.set_xlabel("Mean |ΔProbability|")
+        ax.set_xlabel("Mean |DeltaProbability|")
         ax.set_ylabel("Swapped-to value")
         ax.legend(title="Outcome Label", bbox_to_anchor=(1.01, 1), fontsize=8)
         plt.tight_layout()
@@ -448,7 +448,7 @@ def plot_counterfactual_results(
         else:
             plt.close(fig)
 
-    # ── Plot 2: CI error bar plot (swap-level) ─────────────────────────────────────
+    # -- Plot 2: CI error bar plot (swap-level) -------------------------------------
     for feat, df in aggregated.items():
         if df.empty or "ci95_half_width_abs_delta" not in df.columns:
             continue
@@ -474,11 +474,11 @@ def plot_counterfactual_results(
             ax.barh(y_pos, means, xerr=half_widths, align="center", alpha=0.85, capsize=4, color="#54a0e0", ecolor="#2c3e50")
             ax.set_yticks(y_pos)
             ax.set_yticklabels(swap_vals)
-            ax.set_xlabel("Mean |ΔProbability|")
+            ax.set_xlabel("Mean |DeltaProbability|")
             ax.set_title(f"Label: {label}", fontsize=11, fontweight="bold")
             ax.axvline(0, color="gray", linestyle="--", linewidth=0.8)
         fig.suptitle(
-            f"'{feat}' — Mean |ΔProbability| with 95% CI\n"
+            f"'{feat}' - Mean |DeltaProbability| with 95% CI\n"
             "by swapped-to value and outcome label",
             fontsize=13, fontweight="bold",
         )
@@ -491,7 +491,7 @@ def plot_counterfactual_results(
         else:
             plt.close(fig)
     
-    # ── Plot 3 and 4: Before → After transition and transition CI ────────────
+    # -- Plot 3 and 4: Before -> After transition and transition CI ------------
     if raw is not None:
         for feat, df_raw in raw.items():
             if df_raw.empty or "original_value" not in df_raw.columns:
@@ -521,7 +521,7 @@ def plot_counterfactual_results(
                     for col in pivot_mean.columns:
                         mean_val = pivot_mean.loc[row, col]
                         ci_half_width = ci_pivot.loc[row, col] if (row in ci_pivot.index and col in ci_pivot.columns) else 0
-                        annotated_df.loc[row, col] = f"{mean_val:.3f} ± {ci_half_width:.3f}"
+                        annotated_df.loc[row, col] = f"{mean_val:.3f} +/- {ci_half_width:.3f}"
                 return annotated_df
             
             for label in top_labels:
@@ -542,9 +542,9 @@ def plot_counterfactual_results(
                     pivot, annot=annotation, fmt="",  # Use preformatted annotations
                     cmap="YlOrRd", ax=ax,
                     annot_kws={"size":8},
-                    cbar_kws={"label": "Mean |ΔProbability|"},
+                    cbar_kws={"label": "Mean |DeltaProbability|"},
                 )
-                ax.set_title(f'{feat} — Before → After |ΔProbability|\nLabel: {label}', fontsize=13, fontweight="bold")
+                ax.set_title(f'{feat} - Before -> After |DeltaProbability|\nLabel: {label}', fontsize=13, fontweight="bold")
                 ax.set_xlabel("Swapped-to value")
                 ax.set_ylabel("Original value")
                 plt.tight_layout()
@@ -563,8 +563,8 @@ def plot_counterfactual_results(
                 n_labels  = len(top_labels)
                 cmap_ci   = plt.cm.get_cmap("tab10", len(swap_vals))
  
-                # ── Single-column layout for a two-column research paper ──────────
-                # IEEE / ACM single column = 3.5 in  |  Elsevier ≈ 90 mm ≈ 3.54 in
+                # -- Single-column layout for a two-column research paper ----------
+                # IEEE / ACM single column = 3.5 in  |  Elsevier ~ 90 mm ~ 3.54 in
                 # Arrange subplots in a 2-wide grid so the figure stays narrow but
                 # tall rather than an unreadable 32-inch-wide strip.
                 N_COLS   = 2
@@ -592,7 +592,7 @@ def plot_counterfactual_results(
                             .set_index("original_value")
                             .reindex(original_vals)
                         )
-                        # ── signed ΔProbability (positive = prediction rises) ──
+                        # -- signed DeltaProbability (positive = prediction rises) --
                         means       = df_sv["mean_delta"].fillna(0).values
                         half_widths = df_sv["ci95_half_width_delta"].fillna(0).values
                         offset = (swap_index - number_of_swaps / 2 + 0.5) * width
@@ -613,16 +613,16 @@ def plot_counterfactual_results(
                     ax.set_yticks(y_base)
                     ax.set_yticklabels(original_vals, fontsize=5)
                     ax.tick_params(axis="x", labelsize=5)
-                    ax.set_xlabel("ΔP", fontsize=5)
+                    ax.set_xlabel("DeltaP", fontsize=5)
                     # Zero-line so direction of change is immediately readable
                     ax.axvline(0, color="black", linestyle="-", linewidth=0.6, zorder=3)
                     # Truncate long label names so they fit inside a narrow column
-                    short_lbl = (label[:22] + "…") if len(label) > 22 else label
+                    short_lbl = (label[:22] + "...") if len(label) > 22 else label
                     ax.set_title(short_lbl, fontsize=5.5, fontweight="bold", pad=2)
  
                 # One shared legend on the first panel only
                 axes_flat[0].legend(
-                    title="Swap→",
+                    title="Swap->",
                     fontsize=4.5,
                     title_fontsize=5,
                     loc="lower right",
@@ -636,7 +636,7 @@ def plot_counterfactual_results(
                     axes_flat[idx].set_visible(False)
  
                 fig.suptitle(
-                    f"{feat}  —  ΔP (signed) with 95% CI",
+                    f"{feat}  -  DeltaP (signed) with 95% CI",
                     fontsize=6, fontweight="bold",
                 )
                 if output_dir:
@@ -648,7 +648,7 @@ def plot_counterfactual_results(
                     plt.show()
                 else:
                     plt.close(fig)
-    # ── Plot 5: Overall feature sensitivity summary ──────────────────────────────────────
+    # -- Plot 5: Overall feature sensitivity summary --------------------------------------
     summary_rows = [{"feature": feat, "mean_abs_delta": df["mean_abs_delta"].mean()} for feat, df in aggregated.items() if not df.empty]
     if summary_rows:
         summary_df = pd.DataFrame(summary_rows).sort_values("mean_abs_delta", ascending=False)
@@ -657,10 +657,10 @@ def plot_counterfactual_results(
         ax.barh(summary_df["feature"], summary_df["mean_abs_delta"], color=colors[:len(summary_df)], alpha=0.85)
         ax.set_title(
             "Overall Feature Sensitivity\n"
-            "Mean |ΔProbability| averaged over all swaps and labels",
+            "Mean |DeltaProbability| averaged over all swaps and labels",
             fontsize=13, fontweight="bold",
         )
-        ax.set_xlabel("Mean |ΔProbability|")
+        ax.set_xlabel("Mean |DeltaProbability|")
         plt.tight_layout()
         if output_dir:
             fig.savefig(out / "counterfactual_summary.png", dpi=300, bbox_inches="tight")
@@ -669,5 +669,5 @@ def plot_counterfactual_results(
             plt.show()
         else:
             plt.close(fig)
-        print("\n📊 Feature Sensitivity Summary:")
+        print("\nFeature Sensitivity Summary:")
         print(summary_df.to_string(index=False))

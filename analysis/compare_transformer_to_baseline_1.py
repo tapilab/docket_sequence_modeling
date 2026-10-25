@@ -30,7 +30,7 @@ def compare_transformer_vs_baseline1_on_completion_labels(
     else:
         baseline_arr = np.array(baseline1_preds)
     
-    print(f"✅ Using existing predictions:")
+    print(f"Using existing predictions:")
     print(f"   Transformer: {len(trans_arr):,} steps")
     print(f"   Ground truth: {len(true_arr):,} steps")
     print(f"   Baseline 1: {len(baseline_arr):,} cases")
@@ -73,7 +73,7 @@ def compare_transformer_vs_baseline1_on_completion_labels(
     if not completion_label_indices:
         raise ValueError("No completion labels found in label_processor.label_names")
     
-    print(f"\n✅ Filtering to {len(completion_label_indices)} completion labels:")
+    print(f"\nFiltering to {len(completion_label_indices)} completion labels:")
     for idx in completion_label_indices:
         print(f"   - {label_processor.label_names[idx]}")
 
@@ -91,7 +91,7 @@ def compare_transformer_vs_baseline1_on_completion_labels(
     print(f"   Cases with completion labels: {num_completion:,} ({num_completion/len(true_final_completion)*100:.1f}%)")
     
     if num_completion == 0:
-        print("\n⚠️  No cases with completion labels found!")
+        print("\nNo cases with completion labels found!")
         return None
     
     # Filter to cases with completion
@@ -102,7 +102,7 @@ def compare_transformer_vs_baseline1_on_completion_labels(
     mcm_trans = multilabel_confusion_matrix(true_comp, trans_comp)
     mcm_base = multilabel_confusion_matrix(true_comp, baseline_comp)
     
-    print(f"\n📊 Data shape: {true_comp.shape[0]} cases × {true_comp.shape[1]} completion labels")
+    print(f"\nData shape: {true_comp.shape[0]} cases x {true_comp.shape[1]} completion labels")
     
 
     # Calculate for all of them together

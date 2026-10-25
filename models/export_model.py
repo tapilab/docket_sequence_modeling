@@ -23,27 +23,27 @@ def export_model_complete(
     model_path = output_dir / f"{model_name}.pt"
     torch.save(model.state_dict(), model_path)
     exported_files['model_weights'] = model_path
-    print(f"✅ Saved model weights: {model_path}")
+    print(f"Saved model weights: {model_path}")
     
     # 2. Save label processor
     label_processor_path = output_dir / 'label_processor.pkl'
     with open(label_processor_path, 'wb') as f:
         pickle.dump(label_processor, f)
     exported_files['label_processor'] = label_processor_path
-    print(f"✅ Saved label processor: {label_processor_path}")
+    print(f"Saved label processor: {label_processor_path}")
     
     # 3. Save vocabularies
     charge_vocab_path = output_dir / 'charge_vocab.pkl'
     with open(charge_vocab_path, 'wb') as f:
         pickle.dump(model.charge_vocab, f)
     exported_files['charge_vocab'] = charge_vocab_path
-    print(f"✅ Saved charge vocabulary: {charge_vocab_path}")
+    print(f"Saved charge vocabulary: {charge_vocab_path}")
     
     mag_vocab_path = output_dir / 'mag_vocab.pkl'
     with open(mag_vocab_path, 'wb') as f:
         pickle.dump(model.mag_vocab, f)
     exported_files['mag_vocab'] = mag_vocab_path
-    print(f"✅ Saved magistrate vocabulary: {mag_vocab_path}")
+    print(f"Saved magistrate vocabulary: {mag_vocab_path}")
     
     # 4. Save model configuration parameters
     model_config = get_model_config()
@@ -64,7 +64,7 @@ def export_model_complete(
     with open(config_path, 'wb') as f:
         pickle.dump(config_dict, f)
     exported_files['model_config'] = config_path
-    print(f"✅ Saved model configuration: {config_path}")
+    print(f"Saved model configuration: {config_path}")
     
     # 5. Create a manifest file with all paths
     manifest = {
@@ -81,7 +81,7 @@ def export_model_complete(
     with open(manifest_path, 'wb') as f:
         pickle.dump(manifest, f)
     exported_files['manifest'] = manifest_path
-    print(f"✅ Saved manifest: {manifest_path}")
+    print(f"Saved manifest: {manifest_path}")
     
     print("\n" + "="*60)
     print("MODEL EXPORT COMPLETE")

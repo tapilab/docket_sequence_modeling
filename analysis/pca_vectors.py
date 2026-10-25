@@ -239,7 +239,7 @@ Step 5: Visualization
 """
 
 def _truncate_label(label: str, max_len: int = 35) -> str:
-    return label if len(label) <= max_len else label[:max_len - 1] + "…"
+    return label if len(label) <= max_len else label[:max_len - 3] + "..."
 
 
 def _ensure_label_array(label_matrix_like):
@@ -329,7 +329,7 @@ def plot_pca_label_grid(
     fig.supxlabel(f"PC-1 ({evr[0] * 100:.1f}% var)", fontsize=10)
     fig.supylabel(f"PC-2 ({evr[1] * 100:.1f}% var)", fontsize=10)
     fig.suptitle(
-        title or "PCA Embeddings — Label Presence",
+        title or "PCA Embeddings - Label Presence",
         fontsize=13,
         fontweight="bold",
         y=1.01,
@@ -387,7 +387,7 @@ def plot_pca_by_clusters(
     ax.set_xlabel(f"PC-1 ({evr[0] * 100:.1f}% var)")
     ax.set_ylabel(f"PC-2 ({evr[1] * 100:.1f}% var)")
     ax.set_title(
-        title or "PCA of Pre-Classifier Vectors — Cluster Assignment",
+        title or "PCA of Pre-Classifier Vectors - Cluster Assignment",
         fontsize=13,
         fontweight="bold",
     )
@@ -466,11 +466,11 @@ def plot_multilabel_cluster_heatmap(
         print("No labels exceed the minimum prevalence threshold.")
         return
 
-    # ── TRANSPOSE: rows = labels, cols = clusters ─────────────────────────────
+    # -- TRANSPOSE: rows = labels, cols = clusters -----------------------------
     pct_T = pct_f.T
     raw_T = raw_f.T
 
-    # ── annotation: percentage only, no counts ────────────────────────────────
+    # -- annotation: percentage only, no counts --------------------------------
     annot = np.empty_like(pct_T, dtype=object)
     for i in range(pct_T.shape[0]):
         for j in range(pct_T.shape[1]):
@@ -482,7 +482,7 @@ def plot_multilabel_cluster_heatmap(
             else:
                 annot[i, j] = ""
 
-    # ── axis labels ───────────────────────────────────────────────────────────
+    # -- axis labels -----------------------------------------------------------
     def _clean_label(name: str) -> str:
         cleaned = name.replace('_', ' ').title()
         cleaned = cleaned.replace('Orleans ', '').replace('Orleans', '')
@@ -501,7 +501,7 @@ def plot_multilabel_cluster_heatmap(
 
     x_labels = [f"Cluster {c}" for c in clusters]
 
-    # ── figure sizing ─────────────────────────────────────────────────────────
+    # -- figure sizing ---------------------------------------------------------
     n_rows         = pct_T.shape[0]
     per_row_height = 0.42 if any_wrapped else 0.24
     min_fig_h      = 5.0  if any_wrapped else 3.0
@@ -570,7 +570,7 @@ def plot_multilabel_cluster_heatmap(
 
     plt.close(fig)
 
-    # ── console summary ───────────────────────────────────────────────────────
+    # -- console summary -------------------------------------------------------
     print("\nMULTI-LABEL CLUSTER SUMMARY")
     print("-" * 70)
     for i, (cl, sz) in enumerate(zip(clusters, sizes)):
@@ -632,7 +632,7 @@ def plot_cluster_label_clustermap(
     g.ax_heatmap.set_xlabel("Label (hierarchically clustered)", fontsize=10)
     g.ax_heatmap.set_ylabel("Cluster", fontsize=10)
     g.ax_heatmap.set_title(
-        title or "Cluster × Label — Hierarchically Clustered Labels",
+        title or "Cluster x Label - Hierarchically Clustered Labels",
         fontsize=13,
         fontweight="bold",
         pad=15,
@@ -708,7 +708,7 @@ def plot_cluster_label_stacked_bars(
     ax.set_yticklabels(row_labels, fontsize=8)
     ax.set_xlabel("Label prevalence (%, not mutually exclusive)", fontsize=10)
     ax.set_title(
-        title or f"Cluster Composition — {len(top_idx)} Labels",
+        title or f"Cluster Composition - {len(top_idx)} Labels",
         fontsize=13,
         fontweight="bold",
     )
@@ -791,7 +791,7 @@ def _plot_pca_by_fold(
     ev = pca.explained_variance_ratio_
     ax.set_xlabel(f"PC-1 ({ev[0] * 100:.1f}% var)")
     ax.set_ylabel(f"PC-2 ({ev[1] * 100:.1f}% var)")
-    ax.set_title("Combined Embeddings — Coloured by Fold", fontsize=13, fontweight="bold")
+    ax.set_title("Combined Embeddings - Coloured by Fold", fontsize=13, fontweight="bold")
     ax.legend(loc="best", fontsize=9)
     fig.tight_layout()
 
@@ -852,9 +852,9 @@ def run_embedding_clusters_kfolds_pipeline(
     all_metadata = []
 
     for fold_idx in range(n_folds):
-        print(f"\n{'─' * 70}")
+        print(f"\n{'-' * 70}")
         print(f"  Extracting embeddings from Fold {fold_idx + 1} / {n_folds}")
-        print(f"{'─' * 70}")
+        print(f"{'-' * 70}")
 
         fold_model = cv_runner.load_fold_model(fold_idx)
         fold_model.eval()
@@ -898,7 +898,7 @@ def run_embedding_clusters_kfolds_pipeline(
     fold_ids = np.array([m["fold_idx"] for m in all_metadata])
 
     print(f"\n{'=' * 70}")
-    print(f"COMBINED: {N:,} vectors × {vectors_combined.shape[1]} dims across {n_folds} folds")
+    print(f"COMBINED: {N:,} vectors x {vectors_combined.shape[1]} dims across {n_folds} folds")
     print(f"{'=' * 70}")
 
     for f in sorted(set(fold_ids)):
@@ -919,14 +919,14 @@ def run_embedding_clusters_kfolds_pipeline(
     )
 
     if show_elbow:
-        print("\nElbow / Silhouette analysis …")
+        print("\nElbow / Silhouette analysis ...")
         plot_elbow(
             projected,
             range_of_k=range(2, 13),
             output_path=output_dir / "elbow_silhouette.png",
         )
 
-    print(f"\nKMeans with K={n_clusters} …")
+    print(f"\nKMeans with K={n_clusters} ...")
     km_labels, km_model = run_kmeans(
         projected,
         nclusters=n_clusters,
@@ -942,7 +942,7 @@ def run_embedding_clusters_kfolds_pipeline(
         label_processor.label_names,
         pca,
         output_path=output_dir / "pca_label_grid.png",
-        title=f"K-Fold Combined Embeddings — Label Presence ({label_mode})",
+        title=f"K-Fold Combined Embeddings - Label Presence ({label_mode})",
         min_prevalence_pct=min_prevalence_pct,
     )
 
@@ -952,7 +952,7 @@ def run_embedding_clusters_kfolds_pipeline(
         pca,
         centroids_2d=centroids_2d,
         output_path=output_dir / "pca_by_kmeans_cluster.png",
-        title="K-Fold Combined Embeddings — KMeans Clusters",
+        title="K-Fold Combined Embeddings - KMeans Clusters",
     )
 
     _plot_pca_by_fold(
@@ -977,7 +977,7 @@ def run_embedding_clusters_kfolds_pipeline(
         label_matrix_for_analysis,
         label_processor.label_names,
         output_path=output_dir / "cluster_label_clustermap.png",
-        title=f"K-Fold Combined: Cluster × Label ({label_mode})",
+        title=f"K-Fold Combined: Cluster x Label ({label_mode})",
         min_prevalence_pct=min_prevalence_pct,
     )
 
@@ -992,7 +992,7 @@ def run_embedding_clusters_kfolds_pipeline(
 
     db_results = {}
     if run_dbscan:
-        print(f"\nDBSCAN (eps={dbscan_eps}, min_samples={dbscan_min_samples}) …")
+        print(f"\nDBSCAN (eps={dbscan_eps}, min_samples={dbscan_min_samples}) ...")
         db_labels, db_model = run_dbscan_func(
             projected,
             eps=dbscan_eps,
@@ -1006,7 +1006,7 @@ def run_embedding_clusters_kfolds_pipeline(
             db_labels,
             pca,
             output_path=output_dir / "pca_by_dbscan_cluster.png",
-            title="K-Fold Combined — DBSCAN Clusters",
+            title="K-Fold Combined - DBSCAN Clusters",
         )
 
         plot_multilabel_cluster_heatmap(
@@ -1058,7 +1058,7 @@ def run_embedding_clusters_kfolds_pipeline(
         fold_dist = Counter(fold_ids[mask])
         fold_str = ", ".join(f"F{int(f)}:{c}" for f, c in sorted(fold_dist.items()))
 
-        print(f"  Cluster {cl} — {n} samples — folds: [{fold_str}]")
+        print(f"  Cluster {cl} - {n} samples - folds: [{fold_str}]")
         print(f"      labels: {top_str}")
 
     print(f"\nAnalysis complete. Outputs: {output_dir}")
@@ -1142,14 +1142,14 @@ def run_embedding_clusters_pipeline(
     )
 
     if show_elbow:
-        print("\nElbow / Silhouette analysis …")
+        print("\nElbow / Silhouette analysis ...")
         plot_elbow(
             projected,
             range_of_k=range(2, 13),
             output_path=output_dir / "elbow_silhouette.png",
         )
 
-    print(f"\nKMeans with K={n_clusters} …")
+    print(f"\nKMeans with K={n_clusters} ...")
     km_labels, km_model = run_kmeans(
         projected,
         nclusters=n_clusters,
@@ -1165,7 +1165,7 @@ def run_embedding_clusters_pipeline(
         label_processor.label_names,
         pca,
         output_path=output_dir / "pca_label_grid.png",
-        title=f"PCA Embeddings — Label Presence ({label_mode})",
+        title=f"PCA Embeddings - Label Presence ({label_mode})",
         min_prevalence_pct=min_prevalence_pct,
     )
 
@@ -1191,7 +1191,7 @@ def run_embedding_clusters_pipeline(
         label_matrix_for_analysis,
         label_processor.label_names,
         output_path=output_dir / "cluster_label_clustermap.png",
-        title=f"Cluster × Label ({label_mode})",
+        title=f"Cluster x Label ({label_mode})",
         min_prevalence_pct=min_prevalence_pct,
     )
 
@@ -1206,7 +1206,7 @@ def run_embedding_clusters_pipeline(
 
     db_results = {}
     if run_dbscan:
-        print(f"\nDBSCAN (eps={dbscan_eps}, min_samples={dbscan_min_samples}) …")
+        print(f"\nDBSCAN (eps={dbscan_eps}, min_samples={dbscan_min_samples}) ...")
         db_labels, db_model = run_dbscan_func(
             projected,
             eps=dbscan_eps,
@@ -1220,7 +1220,7 @@ def run_embedding_clusters_pipeline(
             db_labels,
             pca,
             output_path=output_dir / "pca_by_dbscan_cluster.png",
-            title="Pre-Classifier Embeddings (PCA) — DBSCAN Clusters",
+            title="Pre-Classifier Embeddings (PCA) - DBSCAN Clusters",
         )
 
         plot_multilabel_cluster_heatmap(
@@ -1269,7 +1269,7 @@ def run_embedding_clusters_pipeline(
         ]
         label_str = ", ".join(label_parts) if label_parts else "No active labels"
 
-        print(f"  Cluster {cl} — {n} samples — labels: {label_str}")
+        print(f"  Cluster {cl} - {n} samples - labels: {label_str}")
 
     print(f"\nAnalysis complete. Outputs: {output_dir}")
 
